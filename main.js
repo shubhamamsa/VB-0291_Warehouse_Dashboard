@@ -21,7 +21,7 @@ function refreshContent(){
         container._leaflet_id = null;
     }
      
-    var map = L.map('map').setView([20.5937, 78.9629], 5);
+    var map = L.map('map').setView([20.5937, 78.9629], 4);
     var jsonDataObject =[];
     var jsonDataObject1 =[];
     var graph_arr = [['Order ID', 'Time Taken', { role: 'style' }]];
