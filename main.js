@@ -50,6 +50,9 @@ function refreshContent(){
 
         console.log(trHTML);
     	$('#tableContent').html(trHTML);
+        var objDiv = document.getElementById("orderInformation");
+        objDiv.scrollTop = objDiv.scrollHeight;
+
     	var trHTML = '';
 
         for (var i = 0; i < data.feed.entry.length; ++i) {
