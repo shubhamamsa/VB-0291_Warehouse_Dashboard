@@ -1,5 +1,7 @@
 var jsonEndPoint = 'https://spreadsheets.google.com/feeds/list/1PRbJucGsHYOauVvvfgDAqKK6UIw4s6qabqeTnvcb57g/1/public/full?alt=json'
 
+
+
 google.charts.load("current", {packages:['corechart']});
 google.charts.setOnLoadCallback(refreshContent);
 
@@ -8,7 +10,7 @@ $(document).ready(function() {
     refreshContent();
     
     // Fetch every 1 second
-    setInterval(refreshContent, 2000);
+    setInterval(refreshContent, 5000);
 });
     
 function refreshContent(){
@@ -57,12 +59,42 @@ function refreshContent(){
                 "OderID" : data.feed.entry[i].gsx$orderid.$t,
                 "Item" : data.feed.entry[i].gsx$item.$t,
                 "Latitude": parseFloat(data.feed.entry[i].gsx$latitude.$t),
-                "Longitude": parseFloat(data.feed.entry[i].gsx$longitude.$t)
+                "Longitude": parseFloat(data.feed.entry[i].gsx$longitude.$t),
+                "Priority": data.feed.entry[i].gsx$priority.$t
             };
             jsonDataObject.push(json_data);
-        
+            var greenIcon = new L.Icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+                iconSize: [16, 25],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+            });
+
+            var yellowIcon = new L.Icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png',
+                iconSize: [16, 25],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+            });
+
+            var redIcon = new L.Icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+                iconSize: [16, 25],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+            });
+
             for (var j = 0; j < jsonDataObject.length; j++) {
-                var marker = L.marker(L.latLng(parseFloat(jsonDataObject[j].Latitude), parseFloat(jsonDataObject[j].Longitude)));
+                if(jsonDataObject[j].Priority == 'HP'){
+                    var Icon =  redIcon;
+                }
+                else if(jsonDataObject[j].Priority == 'MP'){
+                    var Icon =  yellowIcon;
+                }
+                else if(jsonDataObject[j].Priority == 'LP'){
+                    var Icon =  greenIcon;
+                }
+                var marker = L.marker(L.latLng(parseFloat(jsonDataObject[j].Latitude), parseFloat(jsonDataObject[j].Longitude)), {icon: Icon});
                 marker.bindPopup(jsonDataObject[j].City, {
                     autoClose: false
                 });
