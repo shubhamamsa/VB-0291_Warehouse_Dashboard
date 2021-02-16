@@ -8,7 +8,7 @@ $(document).ready(function() {
     refreshContent();
     
     // Fetch every 1 second
-    // setInterval(refreshContent, 200000);
+    setInterval(refreshContent, 2000);
 });
     
 function refreshContent(){
