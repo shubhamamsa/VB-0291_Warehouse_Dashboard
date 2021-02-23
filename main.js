@@ -1,4 +1,4 @@
-var jsonEndPoint = 'https://spreadsheets.google.com/feeds/list/1PRbJucGsHYOauVvvfgDAqKK6UIw4s6qabqeTnvcb57g/1/public/full?alt=json'
+var jsonEndPoint = 'https://spreadsheets.google.com/feeds/list/1P0BqdUVrfW9-IL11cFpKdsiz6QnQcXHC--CHPE0vQaw/5/public/full?alt=json'
 
 
 
@@ -38,11 +38,11 @@ function refreshContent(){
                 	  '</td><td>' + data.feed.entry[i].gsx$item.$t + 
                 	  '</td><td>' + data.feed.entry[i].gsx$priority.$t + 
                 	  '</td><td>' + data.feed.entry[i].gsx$city.$t + 
-                	  '</td><td>'  + data.feed.entry[i].gsx$dispatched.$t + 
-                      '</td><td>' + data.feed.entry[i].gsx$shipped.$t +
+                	  '</td><td>'  + data.feed.entry[i].gsx$dispatchstatus.$t + 
+                      '</td><td>' + data.feed.entry[i].gsx$shippedstatus.$t +
                       '</td><td>' + data.feed.entry[i].gsx$orderdateandtime.$t +
                       '</td><td>' + data.feed.entry[i].gsx$dispatchdateandtime.$t +
-                      '</td><td>' + data.feed.entry[i].gsx$shippingdateandtime.$t +
+                      '</td><td>' + data.feed.entry[i].gsx$shippeddateandtime.$t +
                       '</td><td>' + data.feed.entry[i].gsx$timetaken.$t +
                 	  '</td></tr>';
 
@@ -63,7 +63,8 @@ function refreshContent(){
                 "Item" : data.feed.entry[i].gsx$item.$t,
                 "Latitude": parseFloat(data.feed.entry[i].gsx$latitude.$t),
                 "Longitude": parseFloat(data.feed.entry[i].gsx$longitude.$t),
-                "Priority": data.feed.entry[i].gsx$priority.$t
+                "DispatchStatus": data.feed.entry[i].gsx$dispatchstatus.$t,
+                "ShippedStatus": data.feed.entry[i].gsx$shippedstatus.$t
             };
             jsonDataObject.push(json_data);
             var greenIcon = new L.Icon({
@@ -88,14 +89,14 @@ function refreshContent(){
             });
 
             for (var j = 0; j < jsonDataObject.length; j++) {
-                if(jsonDataObject[j].Priority == 'HP'){
-                    var Icon =  redIcon;
+                if(jsonDataObject[j].ShippedStatus == 'Yes'){
+                    var Icon =  greenIcon;
                 }
-                else if(jsonDataObject[j].Priority == 'MP'){
+                else if(jsonDataObject[j].DispatchStatus == 'Yes'){
                     var Icon =  yellowIcon;
                 }
-                else if(jsonDataObject[j].Priority == 'LP'){
-                    var Icon =  greenIcon;
+                else {
+                    var Icon =  redIcon;
                 }
                 var marker = L.marker(L.latLng(parseFloat(jsonDataObject[j].Latitude), parseFloat(jsonDataObject[j].Longitude)), {icon: Icon});
                 marker.bindPopup(jsonDataObject[j].City, {
@@ -128,7 +129,8 @@ function refreshContent(){
             var json_data = {
                 "OderID" : data.feed.entry[i].gsx$orderid.$t,
                 "TimeTaken": parseFloat(data.feed.entry[i].gsx$timetaken.$t),
-                "Priority": data.feed.entry[i].gsx$priority.$t
+                "Priority": data.feed.entry[i].gsx$priority.$t,
+                "ShippedTime": data.feed.entry[i].gsx$shippeddateandtime.$t
             };
             jsonDataObject1.push(json_data);
         };
@@ -148,7 +150,9 @@ function refreshContent(){
 
         // Converting Json Object to JavaScript Array
         for(var j in jsonDataObject1){
-            graph_arr.push([jsonDataObject1[j].OderID,jsonDataObject1[j].TimeTaken, bar_color[j]]);
+            if(jsonDataObject1[j].ShippedTime != "")    {
+                graph_arr.push([jsonDataObject1[j].OderID,jsonDataObject1[j].TimeTaken, bar_color[j]]);
+            }
         }
         var graphArray_Final = google.visualization.arrayToDataTable(graph_arr);
         var data = new google.visualization.DataView(graphArray_Final); 
