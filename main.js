@@ -129,8 +129,7 @@ function refreshContent(){
             var json_data = {
                 "OderID" : data.feed.entry[i].gsx$orderid.$t,
                 "TimeTaken": parseFloat(data.feed.entry[i].gsx$timetaken.$t),
-                "Priority": data.feed.entry[i].gsx$priority.$t,
-                "ShippedTime": data.feed.entry[i].gsx$shippeddateandtime.$t
+                "Priority": data.feed.entry[i].gsx$priority.$t
             };
             jsonDataObject1.push(json_data);
         };
@@ -150,9 +149,7 @@ function refreshContent(){
 
         // Converting Json Object to JavaScript Array
         for(var j in jsonDataObject1){
-            if(jsonDataObject1[j].ShippedTime != "")    {
-                graph_arr.push([jsonDataObject1[j].OderID,jsonDataObject1[j].TimeTaken, bar_color[j]]);
-            }
+            graph_arr.push([jsonDataObject1[j].OderID,jsonDataObject1[j].TimeTaken, bar_color[j]]);
         }
         var graphArray_Final = google.visualization.arrayToDataTable(graph_arr);
         var data = new google.visualization.DataView(graphArray_Final); 
